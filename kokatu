@@ -1,0 +1,126 @@
+#!/bin/sh
+
+#############################################
+#======= C O N F I G U R A T I O N S =======#
+#############################################
+
+kokatu_db="/tmp/kokatu.db"
+
+compression="Y"
+verbose=""
+
+rg_options="-z"
+
+# same default optios to the ones used in updatedb [/etc/updatedb.conf]
+prunenames=".git .hg .svn"
+prunepaths="/afs /media /mnt /net /sfs /tmp /udev /var/cache /var/lib/pacman/local /var/lock /var/run /var/spool /var/tmp"
+
+ALL_OFF="\e[1;0m"
+BOLD="\e[1;1m"
+RED="${BOLD}\e[1;31m"
+GREEN="${BOLD}\e[1;32m"
+
+#############################################
+#=== A U X I L I A R   F U N C T I O N S ===#
+#############################################
+
+__mesage() {
+    local color=$1 && shift
+    local tag=$1 && shift
+    local mesg=$1 && shift
+    printf "${color}${tag}${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}\n" "$@" >&2
+}
+
+_error() {
+    local tag=$1 && shift
+    __mesage "${RED}" "$tag" "$@"
+}
+
+_exit_error() {
+    _error "ERROR:" "$@"
+    exit 1
+}
+
+_info() {
+    local tag=$1 && shift
+    __mesage "${GREEN}" "$tag" "$@"
+}
+
+_check_command() {
+    command -v $1 >/dev/null || _exit_error "'$1' is not installed"
+}
+
+#############################################
+#============= C O M M A N D S =============#
+#############################################
+
+usage() {
+    _info "USAGE:" "$(basename $0) [-d <database-path>] {[-u] | [-c] [-i] <pattern>}"
+    exit 2
+}
+
+set_database() {
+    kokatu_db="$1"
+}
+
+update_database() {
+    [ "$EUID" -ne 0 ] && _exit_error "The database update needs to be run as root"
+
+    _check_command fd
+
+    local prune_options=""
+    for prune in $prunenames; do prune_options="$prune_options -E $prune"; done
+    for prune in $prunepaths; do prune_options="$prune_options -E $prune"; done
+
+    if [ ! -z "$compression" ]; then
+        _check_command lz4
+        rm "$kokatu_db" 2>/dev/null
+
+        fd -uu $prune_options . / | lz4 -f --favor-decSpeed -q - "$kokatu_db.lz4"
+    else
+        rm "$kokatu_db.lz4" 2>/dev/null
+
+        fd -uu $prune_options . / >"$kokatu_db"
+    fi
+
+    exit 0
+}
+
+find_string() {
+    _check_command rg
+
+    [ ! -z "$compression" ] && kokatu_db="$kokatu_db.lz4"
+
+    [ ! -f "$kokatu_db" ] && _exit_error "Database not found [$kokatu_db]"
+
+    rg -N $rg_options "$1" "$kokatu_db"
+}
+
+#############################################
+#============ M A I N   L O O P ============#
+#############################################
+
+while getopts 'd:uci?h' c; do
+    case $c in
+        d)
+            set_database "${OPTARG}"
+            ;;
+        u)
+            update_database
+            ;;
+        c)
+            rg_options="$rg_options -c"
+            ;;
+        i)
+            rg_options="$rg_options -i"
+            ;;
+        h | ?)
+            usage
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+[ $# -eq 0 ] && _exit_error "No pattern was inputted"
+
+find_string "$@"
