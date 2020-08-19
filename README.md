@@ -52,7 +52,26 @@ diff --git a/kokatu b/kokatu
 ```
 
 ## Performance
+
+The following performance times were measured using [hyperfine](https://github.com/sharkdp/hyperfine), with the command
+```bash
+$ hyperfine --warmup 3 "locate README.md" "kokatu -d /tmp/kokatu.db README.md" "kokatu -d /tmp/kokatu_compressed.db.lz4 README.md"
+```
+
+The conditions of the indexes where the following:
+
+| Program                   | Database Size | Number of entries |
+|---------------------------|---------------|-------------------|
+| mlocate                   | 34M           | 1104969           |
+| kokatu (no compression)   | 111M          | 1487040           |
+| kokatu (with compression) | 17M           | 1487775           |
+
+***NOTE:*** There might be a bug in the way fd is being used, or missing options, but every time the system is indexed, the number of entries is diffenrent.
+
+![](images/performance.png?raw=true)
  
 ## TODO
 
+- Check why every time the system is indexed, the 
+- Add option to only index from a certain path
 - Configuration file
