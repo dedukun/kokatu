@@ -1,6 +1,6 @@
 # kokatu
 
-Kokatu is a POSIX script which works as a wrapper for [fd](https://github.com/sharkdp/fd) and [ripgrep](https://github.com/BurntSushi/ripgrep), 
+kokatu is a POSIX script which works as a wrapper for [fd](https://github.com/sharkdp/fd) and [ripgrep](https://github.com/BurntSushi/ripgrep), 
 bringing a similar functionality to mlocate, i.e, it indexes the system files and then allows the user to search in this index.
 
 ## Requirements
@@ -53,7 +53,7 @@ diff --git a/kokatu b/kokatu
 
 ## Performance
 
-The following performance times were measured using [hyperfine](https://github.com/sharkdp/hyperfine), with the command
+The following performance times were measured using [hyperfine](https://github.com/sharkdp/hyperfine), with the command:
 ```bash
 $ hyperfine --warmup 3 "locate README.md" "kokatu -d /tmp/kokatu.db README.md" "kokatu -d /tmp/kokatu_compressed.db.lz4 README.md"
 ```
@@ -66,12 +66,12 @@ The conditions of the indexes where the following:
 | kokatu (no compression)   | 111M          | 1487040           |
 | kokatu (with compression) | 17M           | 1487775           |
 
-***NOTE:*** There might be a bug in the way fd is being used, or missing options, but every time the system is indexed, the number of entries is diffenrent.
+***NOTE:*** There might be a bug in the way fd is being used, or missing options, but every time the system is indexed, the number of entries is different.
 
 ![](images/performance.png?raw=true)
  
 ## TODO
 
-- Check why every time the system is indexed, the 
+- Check why every time the system is indexed, the index has diffenret number of entries
 - Add option to only index from a certain path
 - Configuration file
