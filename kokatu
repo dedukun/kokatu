@@ -6,7 +6,7 @@
 
 kokatu_db="/tmp/kokatu.db"
 
-compression="Y"
+compression=""
 verbose=""
 
 rg_options="-z"
