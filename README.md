@@ -73,6 +73,6 @@ The conditions of the indexes where the following:
 
 ## TODO
 
-- Check why every time the system is indexed, the index has diffenret number of entries
+- Check why every time the system is indexed, the index has a different number of entries
 - Add option to only index from a certain path
 - Configuration file
