@@ -1,6 +1,7 @@
 # kokatu
 
-kokatu is a POSIX script which works as a wrapper for [fd](https://github.com/sharkdp/fd) and [ripgrep](https://github.com/BurntSushi/ripgrep),
+[kokatu](https://translate.google.com/#view=home&op=translate&sl=en&tl=eu&text=locate)
+is a POSIX script which works as a wrapper for [fd](https://github.com/sharkdp/fd) and [ripgrep](https://github.com/BurntSushi/ripgrep),
 bringing a similar functionality to mlocate, i.e, it indexes the system files and then allows the user to search in this index.
 
 ## Requirements
