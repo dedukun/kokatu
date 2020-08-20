@@ -7,7 +7,6 @@
 kokatu_db="/tmp/kokatu.db"
 
 compression=""
-verbose=""
 
 rg_options="-z"
 
@@ -24,14 +23,14 @@ NC='\033[0m' # No Color
 #############################################
 
 __mesage() {
-    local color=$1 && shift
-    local tag=$1 && shift
-    local mesg=$1 && shift
+    color=$1 && shift
+    tag=$1 && shift
+    mesg=$1 && shift
     printf "${color}${tag}${NC} ${mesg}\n" "$@" >&2
 }
 
 _error() {
-    local tag=$1 && shift
+    tag=$1 && shift
     __mesage "${RED}" "$tag" "$@"
 }
 
@@ -41,12 +40,12 @@ _exit_error() {
 }
 
 _info() {
-    local tag=$1 && shift
+    tag=$1 && shift
     __mesage "${GREEN}" "$tag" "$@"
 }
 
 _check_command() {
-    command -v $1 >/dev/null || _exit_error "'$1' is not installed"
+    command -v "$1" >/dev/null || _exit_error "'$1' is not installed"
 }
 
 #############################################
@@ -54,7 +53,7 @@ _check_command() {
 #############################################
 
 usage() {
-    _info "USAGE:" "$(basename $0) [-d <database-path>] {[-u] | [-c] [-i] <pattern>}"
+    _info "USAGE:" "$(basename "$0") [-d <database-path>] {[-u] | [-c] [-i] <pattern>}"
     exit 2
 }
 
@@ -63,11 +62,11 @@ set_database() {
 }
 
 update_database() {
-    [ "$EUID" -ne 0 ] && _exit_error "The database update needs to be run as root"
+    [ "$(id -u)" -ne 0 ] && _exit_error "The database update needs to be run as root"
 
     _check_command fd
 
-    local prune_options=""
+    prune_options=""
     for prune in $prunenames; do prune_options="$prune_options -E $prune"; done
     for prune in $prunepaths; do prune_options="$prune_options -E $prune"; done
 
