@@ -15,10 +15,9 @@ rg_options="-z"
 prunenames=".git .hg .svn"
 prunepaths="/afs /media /mnt /net /sfs /tmp /udev /var/cache /var/lib/pacman/local /var/lock /var/run /var/spool /var/tmp"
 
-ALL_OFF="\e[1;0m"
-BOLD="\e[1;1m"
-RED="${BOLD}\e[1;31m"
-GREEN="${BOLD}\e[1;32m"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
 
 #############################################
 #=== A U X I L I A R   F U N C T I O N S ===#
@@ -28,7 +27,7 @@ __mesage() {
     local color=$1 && shift
     local tag=$1 && shift
     local mesg=$1 && shift
-    printf "${color}${tag}${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}\n" "$@" >&2
+    printf "${color}${tag}${NC} ${mesg}\n" "$@" >&2
 }
 
 _error() {
