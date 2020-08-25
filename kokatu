@@ -11,6 +11,7 @@ compression=""
 rg_options="-z"
 
 # same default optios to the ones used in updatedb [/etc/updatedb.conf]
+prunefs="9p afs anon_inodefs auto autofs bdev binfmt_misc cgroup cifs coda configfs cpuset cramfs debugfs devpts devtmpfs ecryptfs exofs ftpfs fuse fuse.encfs fuse.sshfs fusectl gfs gfs2 hugetlbfs inotifyfs iso9660 jffs2 lustre mqueue ncpfs nfs nfs4 nfsd pipefs proc ramfs rootfs rpc_pipefs securityfs selinuxfs sfs shfs smbfs sockfs sshfs sysfs tmpfs ubifs udf usbfs vboxsf"
 prunenames=".git .hg .svn"
 prunepaths="/afs /media /mnt /net /sfs /tmp /udev /var/cache /var/lib/pacman/local /var/lock /var/run /var/spool /var/tmp"
 
@@ -67,8 +68,12 @@ update_database() {
     _check_command fd
 
     prune_options=""
-    for prune in $prunenames; do prune_options="$prune_options -E $prune"; done
-    for prune in $prunepaths; do prune_options="$prune_options -E $prune"; done
+    for fs in $prunefs; do
+        value="$(rg "^$fs" /etc/mtab | awk '{printf "-E " $2 " "}')"
+        [ -n "$value" ] && prune_options="$prune_options $value"
+    done
+    for names in $prunenames; do prune_options="$prune_options -E $names"; done
+    for paths in $prunepaths; do prune_options="$prune_options -E $paths"; done
 
     if [ ! -z "$compression" ]; then
         _check_command lz4
