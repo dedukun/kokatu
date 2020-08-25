@@ -63,16 +63,13 @@ The conditions of the indexes where the following:
 
 | Program                   | Database Size | Number of entries |
 |---------------------------|---------------|-------------------|
-| mlocate                   | 34M           | 1104969           |
-| kokatu (no compression)   | 111M          | 1487040           |
-| kokatu (with compression) | 17M           | 1487775           |
-
-***NOTE:*** There might be a bug in the way fd is being used, or missing options, but every time the system is indexed, the number of entries is different.
+| mlocate                   | 34M           | 1122686           |
+| kokatu (no compression)   | 103M          | 1199505           |
+| kokatu (with compression) | 15M           | 1199505           |
 
 ![](images/performance.png?raw=true)
 
 ## TODO
 
-- Check why every time the system is indexed, the index has a different number of entries
 - Add option to only index from a certain path
 - Configuration file
