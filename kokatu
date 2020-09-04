@@ -69,7 +69,7 @@ update_database() {
 
     prune_options=""
     for fs in $prunefs; do
-        value="$(rg "^$fs" /etc/mtab | awk '{printf "-E " $2 " "}')"
+        value="$(rg "^$fs" /etc/mtab | awk '{printf " -E " $2}')"
         [ -n "$value" ] && prune_options="$prune_options $value"
     done
     for names in $prunenames; do prune_options="$prune_options -E $names"; done
@@ -79,7 +79,7 @@ update_database() {
         _check_command lz4
         rm "$kokatu_db" 2>/dev/null
 
-        fd -uu $prune_options . / | lz4 -f --favor-decSpeed -q - "$kokatu_db.lz4"
+        fd -uu $prune_options . / | lz4 -f -q - "$kokatu_db.lz4"
     else
         rm "$kokatu_db.lz4" 2>/dev/null
 
