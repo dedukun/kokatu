@@ -59,6 +59,7 @@ usage() {
 }
 
 set_database() {
+    [ ! -d "$(dirname $1)" ] && _exit_error "Directory $(dirname $1) doesn't exist"
     kokatu_db="$1"
 }
 
