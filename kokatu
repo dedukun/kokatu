@@ -5,6 +5,7 @@
 #############################################
 
 kokatu_db="/tmp/kokatu.db"
+kokatu_start_path="/"
 
 compression=""
 
@@ -63,6 +64,11 @@ set_database() {
     kokatu_db="$1"
 }
 
+set_start_path() {
+    [ ! -d "$(dirname $1)" ] && _exit_error "Directory $(dirname $1) doesn't exist"
+    kokatu_start_path="$1"
+}
+
 update_database() {
     [ "$(id -u)" -ne 0 ] && _exit_error "The database update needs to be run as root"
 
@@ -80,11 +86,11 @@ update_database() {
         _check_command lz4
         rm "$kokatu_db" 2>/dev/null
 
-        fd -uu $prune_options . / | lz4 -f -q - "$kokatu_db.lz4"
+        fd -uu $prune_options . $kokatu_start_path | lz4 -f -q - "$kokatu_db.lz4"
     else
         rm "$kokatu_db.lz4" 2>/dev/null
 
-        fd -uu $prune_options . / >"$kokatu_db"
+        fd -uu $prune_options . $kokatu_start_path >"$kokatu_db"
     fi
 
     exit 0
@@ -104,10 +110,13 @@ find_string() {
 #============ M A I N   L O O P ============#
 #############################################
 
-while getopts 'd:uci?h' c; do
+while getopts 'dp:uci?h' c; do
     case $c in
         d)
             set_database "${OPTARG}"
+            ;;
+        p)
+            set_start_path "${OPTARG}"
             ;;
         u)
             update_database

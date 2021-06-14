@@ -12,7 +12,7 @@ If you want to use compression, you will need to have [lz4](https://github.com/l
 ## Usage
 
 To create/update the index with kokatu, you just need to run the script with the option `-u`.
-It is required to run this as root.
+You may be required to run this as root if you don't have read permissions of your user for the files selected by the `<start-path>`.
 
 To search for an entry, you need to run the script with the pattern you want to search, `kokatu <pattern>`.
 
@@ -29,6 +29,7 @@ $ kokatu README.md
 The currently supported options are:
 
 - **-d \<database-path\>**  - It overwrites the default path of the database/index [default: /tmp/kokatu.db]
+- **-p \<start-path\>**     - It overwrites the default start path of the files to index [default: /]
 - **-u**                    - It updates/creates the database
 - **-c**                    - Return the number of matches, instead of the matches themselves
 - **-i**                    - Ignore case when searching
@@ -71,5 +72,4 @@ The conditions of the indexes where the following:
 
 ## TODO
 
-- Add option to only index from a certain path
 - Configuration file
