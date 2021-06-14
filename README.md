@@ -33,6 +33,7 @@ The currently supported options are:
 - **-u**                    - It updates/creates the database
 - **-c**                    - Return the number of matches, instead of the matches themselves
 - **-i**                    - Ignore case when searching
+- **-v**                    - Verbose
 
 ## Compression
 

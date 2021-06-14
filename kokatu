@@ -50,12 +50,18 @@ _check_command() {
     command -v "$1" >/dev/null || _exit_error "'$1' is not installed"
 }
 
+_debug_info() {
+    echo "DB: $kokatu_db"
+    echo "Start Path: $kokatu_start_path"
+    echo "Compression: $compression"
+}
+
 #############################################
 #============= C O M M A N D S =============#
 #############################################
 
 usage() {
-    _info "USAGE:" "$(basename "$0") [-d <database-path>] {[-u] | [-c] [-i] <pattern>}"
+    _info "USAGE:" "$(basename "$0") [-d <database-path>] [-v] {[-p <start-path>] [-u] | [-c] [-i] <pattern>}"
     exit 2
 }
 
@@ -110,7 +116,7 @@ find_string() {
 #============ M A I N   L O O P ============#
 #############################################
 
-while getopts 'dp:uci?h' c; do
+while getopts 'dp:uciv?h' c; do
     case $c in
         d)
             set_database "${OPTARG}"
@@ -126,6 +132,9 @@ while getopts 'dp:uci?h' c; do
             ;;
         i)
             rg_options="$rg_options -i"
+            ;;
+        v)
+            _debug_info
             ;;
         h | ?)
             usage
